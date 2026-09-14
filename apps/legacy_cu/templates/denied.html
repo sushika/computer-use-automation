@@ -1,0 +1,18 @@
+{% extends "content_base.html" %}
+{% block title %}Access Denied{% endblock %}
+{% block heading %}Access Denied{% endblock %}
+{% block content %}
+<p id="ctl00$MainContent$lblDenied" role="alert" style="color:#cc0000; font-weight:bold;">
+  ACCESS DENIED. Your security class does not permit this function. (AUTH-4013)
+</p>
+{% if member_id %}
+<p>Requested member ID: {{ member_id }}</p>
+{% endif %}
+<p>
+  <input type="button"
+         id="ctl00$MainContent$btnBack"
+         name="ctl00$MainContent$btnBack"
+         value="Back to search"
+         onclick="location.href='{{ cu_url('search') }}';">
+</p>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "content_base.html" %}
+{% block title %}Member Not Found{% endblock %}
+{% block heading %}Member Not Found{% endblock %}
+{% block content %}
+<p id="ctl00$MainContent$lblNoRecords" role="status">
+  No member records matched the search criteria. (MEM-404)
+</p>
+{% if member_id %}
+<p>Requested member ID: {{ member_id }}</p>
+{% endif %}
+<p>
+  <input type="button"
+         id="ctl00$MainContent$btnBack"
+         name="ctl00$MainContent$btnBack"
+         value="Back to search"
+         onclick="location.href='{{ cu_url('search') }}';">
+</p>
+{% endblock %}

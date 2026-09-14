@@ -1,0 +1,88 @@
+{% extends "content_base.html" %}
+{% block title %}Member {{ member.member_id }}{% endblock %}
+{% block heading %}Member Record{% endblock %}
+{% block content %}
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top" width="55%">
+      <table width="100%" border="1" cellspacing="0" cellpadding="4" bordercolor="#808080">
+        <caption style="text-align:left; font-weight:bold; color:#000080;">Profile</caption>
+        <tr>
+          <th scope="row" align="left">Member ID</th>
+          <td>{{ member.member_id }}</td>
+        </tr>
+        <tr bgcolor="#ffffcc">
+          <th scope="row" align="left">Name</th>
+          <td>{{ member.name }}</td>
+        </tr>
+        <tr>
+          <th scope="row" align="left">Status</th>
+          <td>{{ member.status }}</td>
+        </tr>
+        <tr bgcolor="#ffffcc">
+          <th scope="row" align="left">Date of birth</th>
+          <td>{{ member.dob }}</td>
+        </tr>
+        <tr>
+          <th scope="row" align="left">Phone</th>
+          <td>{{ member.phone }}</td>
+        </tr>
+        <tr bgcolor="#ffffcc">
+          <th scope="row" align="left">Email</th>
+          <td>{{ member.email }}</td>
+        </tr>
+        <tr>
+          <th scope="row" align="left">Address</th>
+          <td>{{ member.address }}</td>
+        </tr>
+      </table>
+    </td>
+    <td width="8">&nbsp;</td>
+    <td valign="top">
+      <table width="100%" border="1" cellspacing="0" cellpadding="6" bordercolor="#000080" bgcolor="#ffff99">
+        <caption style="text-align:left; font-weight:bold; color:#000080;">Balances</caption>
+        <tr>
+          <th scope="row" align="left">
+            <span id="ctl00$MainContent$lblSavingsLabel">Primary savings balance</span>
+          </th>
+          <td>
+            <strong id="ctl00$MainContent$lblSavingsBalance"
+                    aria-labelledby="ctl00$MainContent$lblSavingsLabel">{{ money(member.savings_balance) }}</strong>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table width="100%" border="1" cellspacing="0" cellpadding="4" bordercolor="#808080" style="margin-top:10px;">
+  <caption style="text-align:left; font-weight:bold; color:#000080;">Subaccounts</caption>
+  <tr bgcolor="#000080" style="color:#ffffff;">
+    <th scope="col">Share ID</th>
+    <th scope="col">Share type</th>
+    <th scope="col">Nickname</th>
+    <th scope="col">Balance</th>
+  </tr>
+  {% for share in member.subaccounts %}
+  <tr bgcolor="{{ loop.cycle('#ffffff', '#e8f0ff') }}">
+    <td>{{ share.share_id }}</td>
+    <td>{{ share.share_type }}</td>
+    <td>{{ share.nickname }}</td>
+    <td>{{ money(share.balance) }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<p style="margin-top:12px;">
+  <input type="button"
+         id="ctl00$MainContent$btnNewShare"
+         name="ctl00$MainContent$btnNewShare"
+         value="Open new subaccount"
+         onclick="location.href='{{ cu_url('new_share', member_id=member.member_id) }}';">
+  <input type="button"
+         id="ctl00$MainContent$btnBack"
+         name="ctl00$MainContent$btnBack"
+         value="Back to search"
+         onclick="location.href='{{ cu_url('search') }}';">
+</p>
+{% endblock %}

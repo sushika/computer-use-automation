@@ -1,0 +1,45 @@
+{% extends "content_base.html" %}
+{% block title %}Confirm Subaccount{% endblock %}
+{% block heading %}Confirm New Subaccount{% endblock %}
+{% block content %}
+<p role="status">Review the share below. Confirming will post the new subaccount to member {{ member.member_id }}.</p>
+
+<table width="80%" border="1" cellspacing="0" cellpadding="4" bordercolor="#808080" bgcolor="#ffffcc">
+  <caption style="text-align:left; font-weight:bold; color:#000080;">Pending share</caption>
+  <tr>
+    <th scope="row" align="left">Member</th>
+    <td>{{ member.name }} ({{ member.member_id }})</td>
+  </tr>
+  <tr>
+    <th scope="row" align="left">Share type</th>
+    <td>{{ share_type }}</td>
+  </tr>
+  <tr>
+    <th scope="row" align="left">Nickname</th>
+    <td>{{ nickname }}</td>
+  </tr>
+  <tr>
+    <th scope="row" align="left">Initial deposit</th>
+    <td>{{ deposit_display }}</td>
+  </tr>
+</table>
+
+<form id="aspnetForm" method="post" action="{{ cu_url('confirm_share') }}">
+  {% if inject %}<input type="hidden" name="inject" value="{{ inject }}">{% endif %}
+  <input type="hidden" name="ctl00$MainContent$hidMemberId" value="{{ member.member_id }}">
+  <input type="hidden" name="ctl00$MainContent$ddlShareType" value="{{ share_type }}">
+  <input type="hidden" name="ctl00$MainContent$txtNickname" value="{{ nickname }}">
+  <input type="hidden" name="ctl00$MainContent$txtDeposit" value="{{ deposit }}">
+  <p style="margin-top:12px;">
+    <input type="submit"
+           id="ctl00$MainContent$btnConfirm"
+           name="ctl00$MainContent$btnConfirm"
+           value="Confirm">
+    <input type="button"
+           id="ctl00$MainContent$btnBack"
+           name="ctl00$MainContent$btnBack"
+           value="Back"
+           onclick="location.href='{{ cu_url('new_share', member_id=member.member_id) }}';">
+  </p>
+</form>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "content_base.html" %}
+{% block title %}New Subaccount{% endblock %}
+{% block heading %}Open New Subaccount{% endblock %}
+{% block content %}
+<p>Member <strong>{{ member.member_id }}</strong> — {{ member.name }}. Primary savings balance {{ money(member.savings_balance) }}.</p>
+
+{% if errors %}
+<ul id="ctl00$MainContent$lblError" role="alert" style="color:#cc0000; font-weight:bold;">
+  {% for err in errors %}<li>{{ err }}</li>{% endfor %}
+</ul>
+{% endif %}
+
+<form id="aspnetForm" method="post" action="{{ cu_url('new_share') }}" autocomplete="off">
+  {% if inject %}<input type="hidden" name="inject" value="{{ inject }}">{% endif %}
+  <input type="hidden" name="ctl00$MainContent$hidMemberId" value="{{ member.member_id }}">
+  <table border="0" cellspacing="0" cellpadding="4" bgcolor="#e8e8e8">
+    <tr>
+      <td colspan="2" bgcolor="#008080" style="color:#ffffff; font-weight:bold;">Share setup</td>
+    </tr>
+    <tr>
+      <td>
+        <label for="ctl00$MainContent$ddlShareType">Share type</label>
+      </td>
+      <td>
+        <select id="ctl00$MainContent$ddlShareType" name="ctl00$MainContent$ddlShareType">
+          {% for option in share_types %}
+          <option value="{{ option }}" {% if option == share_type %}selected{% endif %}>{{ option }}</option>
+          {% endfor %}
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label for="ctl00$MainContent$txtNickname">Nickname</label>
+      </td>
+      <td>
+        <input type="text"
+               id="ctl00$MainContent$txtNickname"
+               name="ctl00$MainContent$txtNickname"
+               value="{{ nickname }}"
+               size="24">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label for="ctl00$MainContent$txtDeposit">Initial deposit</label>
+      </td>
+      <td>
+        <input type="text"
+               id="ctl00$MainContent$txtDeposit"
+               name="ctl00$MainContent$txtDeposit"
+               value="{{ deposit }}"
+               size="12">
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" align="right">
+        <input type="button"
+               id="ctl00$MainContent$btnContinue"
+               name="ctl00$MainContent$btnContinue"
+               value="Continue"
+               onclick="document.getElementById('aspnetForm').submit();">
+        <input type="button"
+               id="ctl00$MainContent$btnCancel"
+               name="ctl00$MainContent$btnCancel"
+               value="Cancel"
+               onclick="location.href='{{ cu_url('member', member_id=member.member_id) }}';">
+      </td>
+    </tr>
+  </table>
+</form>
+{% endblock %}

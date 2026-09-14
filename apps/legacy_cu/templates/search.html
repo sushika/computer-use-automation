@@ -1,0 +1,83 @@
+{% extends "content_base.html" %}
+{% block title %}Member Search{% endblock %}
+{% block heading %}Member Search{% endblock %}
+{% block content %}
+{% if error %}
+<p id="ctl00$MainContent$lblError" role="alert" style="color:#cc0000; font-weight:bold;">{{ error }}</p>
+{% endif %}
+<form id="aspnetForm" method="post" action="{{ cu_url('search') }}" autocomplete="off">
+  {% if inject %}<input type="hidden" name="inject" value="{{ inject }}">{% endif %}
+  <table border="0" cellspacing="0" cellpadding="4" bgcolor="#e8e8e8">
+    <tr>
+      <td colspan="2" bgcolor="#008080" style="color:#ffffff; font-weight:bold;">Search criteria</td>
+    </tr>
+    <tr>
+      <td>
+        <label for="ctl00$MainContent$txtMemberId">Member ID</label>
+      </td>
+      <td>
+        <input type="text"
+               id="ctl00$MainContent$txtMemberId"
+               name="ctl00$MainContent$txtMemberId"
+               value="{{ member_id }}"
+               size="12">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label for="ctl00$MainContent$txtLastName">Last name</label>
+      </td>
+      <td>
+        <input type="text"
+               id="ctl00$MainContent$txtLastName"
+               name="ctl00$MainContent$txtLastName"
+               value="{{ last_name }}"
+               size="20">
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" align="right">
+        <input type="button"
+               id="ctl00$MainContent$btnSearch"
+               name="ctl00$MainContent$btnSearch"
+               value="Search"
+               onclick="document.getElementById('aspnetForm').submit();">
+      </td>
+    </tr>
+  </table>
+</form>
+
+{% if searched and not error %}
+<table width="100%" border="1" cellspacing="0" cellpadding="4" bordercolor="#808080" style="margin-top:10px;">
+  <caption style="text-align:left; font-weight:bold; color:#000080;">Search results</caption>
+  <tr bgcolor="#000080" style="color:#ffffff;">
+    <th scope="col">Member ID</th>
+    <th scope="col">Name</th>
+    <th scope="col">Status</th>
+    <th scope="col">Action</th>
+  </tr>
+  {% if results %}
+    {% for row in results %}
+    <tr bgcolor="{{ loop.cycle('#ffffff', '#ffffcc') }}">
+      <td>{{ row.member_id }}</td>
+      <td>{{ row.name }}</td>
+      <td>{{ row.status }}</td>
+      <td>
+        <input type="button"
+               id="ctl00$MainContent$btnSelect{{ row.member_id }}"
+               name="ctl00$MainContent$btnSelect{{ row.member_id }}"
+               value="Select {{ row.name }}"
+               onclick="location.href='{{ cu_url('member', member_id=row.member_id) }}';">
+      </td>
+    </tr>
+    {% endfor %}
+  {% else %}
+    <tr>
+      <td colspan="4" id="ctl00$MainContent$lblNoRecords" role="status">
+        No member records matched the search criteria. (MEM-404)
+      </td>
+    </tr>
+  {% endif %}
+</table>
+{% endif %}
+{% endblock %}

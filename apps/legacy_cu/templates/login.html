@@ -1,0 +1,48 @@
+{% extends "content_base.html" %}
+{% block title %}Log On{% endblock %}
+{% block heading %}Teller Log On{% endblock %}
+{% block content %}
+{% if error %}
+<p id="ctl00$MainContent$lblError" role="alert" style="color:#cc0000; font-weight:bold;">{{ error }}</p>
+{% endif %}
+<form id="aspnetForm" method="post" action="{{ cu_url('login') }}" autocomplete="off">
+  {% if inject %}<input type="hidden" name="inject" value="{{ inject }}">{% endif %}
+  <table border="0" cellspacing="0" cellpadding="4" bgcolor="#e0e0e0">
+    <tr>
+      <td colspan="2" bgcolor="#000080" style="color:#ffffff; font-weight:bold;">RHCU network logon</td>
+    </tr>
+    <tr>
+      <td>
+        <label for="ctl00$MainContent$txtTellerId">Teller ID</label>
+      </td>
+      <td>
+        <input type="text"
+               id="ctl00$MainContent$txtTellerId"
+               name="ctl00$MainContent$txtTellerId"
+               value="{{ teller_id }}"
+               size="16">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label for="ctl00$MainContent$txtPassword">Password</label>
+      </td>
+      <td>
+        <input type="password"
+               id="ctl00$MainContent$txtPassword"
+               name="ctl00$MainContent$txtPassword"
+               size="16">
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" align="right">
+        <input type="submit"
+               id="ctl00$MainContent$btnLogon"
+               name="ctl00$MainContent$btnLogon"
+               value="Log On">
+      </td>
+    </tr>
+  </table>
+</form>
+<p style="font-size:11px; color:#333333;">Demo password is <strong>{{ demo_password }}</strong>. Teller ID may be any non-empty name.</p>
+{% endblock %}

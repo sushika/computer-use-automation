@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>{% block title %}MemberLink{% endblock %} — RHCU</title>
+</head>
+<body bgcolor="#c0c0c0" text="#000000" link="#0000ff" vlink="#800080"
+      style="margin:0; font-family: Tahoma, 'MS Sans Serif', sans-serif; font-size:12px;">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#000080">
+    <tr>
+      <td style="color:#ffffff; font-weight:bold; padding:4px 8px;">
+        Heritage CU Member Services System v2.14
+      </td>
+      <td align="right" style="color:#ffff00; padding:4px 8px;">
+        {% if teller %}Teller: {{ teller }}{% else %}Not signed in{% endif %}
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="2" cellpadding="4">
+    <tr>
+      <td width="150" valign="top" bgcolor="#000080" style="color:#ffffff;">
+        <table width="100%" border="0" cellspacing="0" cellpadding="4">
+          <tr><td style="color:#ffff00; font-weight:bold;">Functions</td></tr>
+          <tr>
+            <td>
+              {% if teller %}
+              <a href="{{ cu_url('search') }}" style="color:#ffffff;">Member Search</a><br>
+              <a href="{{ cu_url('logout') }}" style="color:#ffffff;">Log Off</a>
+              {% else %}
+              <a href="{{ cu_url('login') }}" style="color:#ffffff;">Log On</a>
+              {% endif %}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <iframe
+                id="ctl00$RatesFrame"
+                name="RatesFrame"
+                title="Share rates bulletin"
+                src="{{ url_for('rates') }}"
+                width="140"
+                height="130"
+                frameborder="1"
+                style="background:#ffffcc; border:1px inset #808080;">
+              </iframe>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td valign="top" bgcolor="#ffffff">
+        <table width="100%" border="1" cellspacing="0" cellpadding="8" bordercolor="#808080" bgcolor="#ffffff">
+          <tr>
+            <td>
+              {% if inject == 'dialog' %}
+              <dialog id="ctl00$MainContent$pnlHostDialog"
+                      open
+                      aria-modal="true"
+                      aria-labelledby="ctl00$MainContent$lblDialogTitle"
+                      aria-describedby="ctl00$MainContent$lblDialogText"
+                      style="position:absolute; top:70px; left:180px; width:360px; background:#c0c0c0; border:2px outset #ffffff; z-index:50; padding:0;">
+                <table width="100%" border="0" cellspacing="0" cellpadding="6">
+                  <tr bgcolor="#000080">
+                    <td>
+                      <h2 id="ctl00$MainContent$lblDialogTitle"
+                          style="color:#ffffff; font-weight:bold; font-size:12px; margin:0;">
+                        Host System Message
+                      </h2>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <p id="ctl00$MainContent$lblDialogText" style="margin:0 0 12px 0;">
+                        A nightly batch posting job is running. Click OK to continue.
+                      </p>
+                      <input type="button"
+                             id="ctl00$MainContent$btnDialogOk"
+                             name="ctl00$MainContent$btnDialogOk"
+                             value="OK"
+                             onclick="document.getElementById('ctl00$MainContent$pnlHostDialog').close();">
+                      <input type="button"
+                             id="ctl00$MainContent$btnDialogCancel"
+                             name="ctl00$MainContent$btnDialogCancel"
+                             value="Cancel"
+                             onclick="location.href='{{ cu_url('search') }}';">
+                    </td>
+                  </tr>
+                </table>
+              </dialog>
+              {% endif %}
+
+              <h1 style="font-size:14px; color:#000080; margin:0 0 8px 0;">{% block heading %}{% endblock %}</h1>
+              {% block content %}{% endblock %}
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="3" bgcolor="#808080">
+    <tr>
+      <td style="color:#ffffff; font-size:10px;">Ready</td>
+      <td align="right" style="color:#ffffff; font-size:10px;">CAP &nbsp; NUM</td>
+    </tr>
+  </table>
+</body>
+</html>
