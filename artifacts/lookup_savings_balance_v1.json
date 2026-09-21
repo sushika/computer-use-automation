@@ -1,0 +1,238 @@
+{
+  "schema_version": "1.0",
+  "capability_id": "lookup_savings_balance",
+  "capability_version": 1,
+  "name": "Lookup savings balance",
+  "description": "Lookup savings balance",
+  "approval_state": "draft",
+  "target": {
+    "app_id": "legacy_cu",
+    "vendor_product": "legacy_cu_core",
+    "surface_type": "legacy_web",
+    "entry_url": "http://127.0.0.1:5001/",
+    "allowlist": {
+      "url_patterns": [
+        "http://127.0.0.1:5001/*"
+      ],
+      "action_types": [
+        "type",
+        "click",
+        "read"
+      ]
+    },
+    "required_secrets": [
+      "teller_password"
+    ]
+  },
+  "inputs": [
+    {
+      "name": "teller_id",
+      "type": "string",
+      "description": "Teller ID",
+      "required": true,
+      "pattern": null,
+      "sensitive": false
+    },
+    {
+      "name": "member_id",
+      "type": "string",
+      "description": "Member ID",
+      "required": true,
+      "pattern": null,
+      "sensitive": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "primary_savings_balance",
+      "type": "money",
+      "description": "Primary savings balance",
+      "required": true,
+      "pattern": null,
+      "sensitive": false
+    }
+  ],
+  "steps": [
+    {
+      "index": 0,
+      "action": "type",
+      "target": {
+        "role": "textbox",
+        "name": "Teller ID",
+        "label_text": "Teller ID",
+        "container_path": [
+          "Main content"
+        ],
+        "ordinal_in_container": 0,
+        "match": "exact_then_fuzzy",
+        "robustness_note": "static label, exact match expected to hold"
+      },
+      "value_template": "{{input.teller_id}}",
+      "url_template": null,
+      "output_key": null,
+      "wait_for": null,
+      "checkpoint": null,
+      "risk": "safe_reversible",
+      "rationale": "Enter the teller id"
+    },
+    {
+      "index": 1,
+      "action": "type",
+      "target": {
+        "role": "textbox",
+        "name": "Password",
+        "label_text": "Password",
+        "container_path": [
+          "Main content"
+        ],
+        "ordinal_in_container": 1,
+        "match": "exact_then_fuzzy",
+        "robustness_note": "static label, exact match expected to hold"
+      },
+      "value_template": "{{secret.teller_password}}",
+      "url_template": null,
+      "output_key": null,
+      "wait_for": null,
+      "checkpoint": null,
+      "risk": "safe_reversible",
+      "rationale": "Enter the teller password"
+    },
+    {
+      "index": 2,
+      "action": "click",
+      "target": {
+        "role": "button",
+        "name": "Log On",
+        "label_text": null,
+        "container_path": [
+          "Main content"
+        ],
+        "ordinal_in_container": 0,
+        "match": "exact_then_fuzzy",
+        "robustness_note": "static label, exact match expected to hold"
+      },
+      "value_template": null,
+      "url_template": null,
+      "output_key": null,
+      "wait_for": null,
+      "checkpoint": null,
+      "risk": "safe_reversible",
+      "rationale": "Submit the login form"
+    },
+    {
+      "index": 3,
+      "action": "type",
+      "target": {
+        "role": "textbox",
+        "name": "Member ID",
+        "label_text": "Member ID",
+        "container_path": [
+          "Main content"
+        ],
+        "ordinal_in_container": 0,
+        "match": "exact_then_fuzzy",
+        "robustness_note": "static label, exact match expected to hold"
+      },
+      "value_template": "{{input.member_id}}",
+      "url_template": null,
+      "output_key": null,
+      "wait_for": null,
+      "checkpoint": null,
+      "risk": "safe_reversible",
+      "rationale": "Enter the member id"
+    },
+    {
+      "index": 4,
+      "action": "click",
+      "target": {
+        "role": "button",
+        "name": "Search",
+        "label_text": null,
+        "container_path": [
+          "Main content"
+        ],
+        "ordinal_in_container": 0,
+        "match": "exact_then_fuzzy",
+        "robustness_note": "static label, exact match expected to hold"
+      },
+      "value_template": null,
+      "url_template": null,
+      "output_key": null,
+      "wait_for": null,
+      "checkpoint": null,
+      "risk": "safe_reversible",
+      "rationale": "Submit the search"
+    },
+    {
+      "index": 5,
+      "action": "click",
+      "target": {
+        "role": "button",
+        "name": "Select",
+        "label_text": "Active",
+        "container_path": [
+          "Main content"
+        ],
+        "ordinal_in_container": 1,
+        "match": "exact_then_fuzzy",
+        "robustness_note": "accessible name varies per record; fallback signal is role + container_path + ordinal_in_container"
+      },
+      "value_template": null,
+      "url_template": null,
+      "output_key": null,
+      "wait_for": null,
+      "checkpoint": null,
+      "risk": "safe_reversible",
+      "rationale": "Select the matching record"
+    },
+    {
+      "index": 6,
+      "action": "read",
+      "target": {
+        "role": "text",
+        "name": "Primary savings balance",
+        "label_text": "Primary savings balance",
+        "container_path": [
+          "Main content"
+        ],
+        "ordinal_in_container": 0,
+        "match": "exact_then_fuzzy",
+        "robustness_note": "static label, exact match expected to hold"
+      },
+      "value_template": null,
+      "url_template": null,
+      "output_key": "primary_savings_balance",
+      "wait_for": null,
+      "checkpoint": null,
+      "risk": "safe_reversible",
+      "rationale": "Read the primary savings balance"
+    }
+  ],
+  "success_condition": {
+    "kind": "page_signature",
+    "expected": "cf5c000c6165205d",
+    "description": "Reached the expected final screen for this capability",
+    "timeout_ms": 10000
+  },
+  "known_outcomes": [
+    {
+      "code": "member_not_found",
+      "detector": {
+        "kind": "text_present",
+        "expected": "TODO: capture actual not-found text",
+        "description": "Placeholder until the not-found screen is captured",
+        "timeout_ms": 10000
+      },
+      "description": "Member search returned no matching record. Stub detector — replace after capturing that screen."
+    }
+  ],
+  "recoveries": [],
+  "provenance": {
+    "discovery_run_id": "913e8a66",
+    "model": "claude-sonnet-5",
+    "compiled_at": "2026-09-21T18:27:08.211338Z",
+    "compiler_version": "0.1",
+    "recorded_on": "legacy_cu_base",
+    "reviewed_by": null
+  }
+}
