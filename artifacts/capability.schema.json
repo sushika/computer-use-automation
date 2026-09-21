@@ -1,0 +1,575 @@
+{
+  "$defs": {
+    "ActionType": {
+      "enum": [
+        "click",
+        "type",
+        "navigate",
+        "read",
+        "wait"
+      ],
+      "title": "ActionType",
+      "type": "string"
+    },
+    "Allowlist": {
+      "additionalProperties": false,
+      "properties": {
+        "url_patterns": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Url Patterns",
+          "type": "array"
+        },
+        "action_types": {
+          "items": {
+            "$ref": "#/$defs/ActionType"
+          },
+          "title": "Action Types",
+          "type": "array"
+        }
+      },
+      "required": [
+        "url_patterns",
+        "action_types"
+      ],
+      "title": "Allowlist",
+      "type": "object"
+    },
+    "ApprovalState": {
+      "enum": [
+        "draft",
+        "approved",
+        "deprecated"
+      ],
+      "title": "ApprovalState",
+      "type": "string"
+    },
+    "Checkpoint": {
+      "additionalProperties": false,
+      "description": "A condition asserted to prove we reached the expected state.",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/CheckpointKind"
+        },
+        "expected": {
+          "title": "Expected",
+          "type": "string"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "timeout_ms": {
+          "default": 10000,
+          "title": "Timeout Ms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "expected",
+        "description"
+      ],
+      "title": "Checkpoint",
+      "type": "object"
+    },
+    "CheckpointKind": {
+      "enum": [
+        "page_signature",
+        "text_present",
+        "element_present",
+        "dialog_present"
+      ],
+      "title": "CheckpointKind",
+      "type": "string"
+    },
+    "KnownOutcome": {
+      "additionalProperties": false,
+      "description": "An expected business result. Returned to the caller; NOT a failure.",
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "detector": {
+          "$ref": "#/$defs/Checkpoint"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "detector",
+        "description"
+      ],
+      "title": "KnownOutcome",
+      "type": "object"
+    },
+    "MatchStrategy": {
+      "enum": [
+        "exact",
+        "exact_then_fuzzy"
+      ],
+      "title": "MatchStrategy",
+      "type": "string"
+    },
+    "ParamSpec": {
+      "additionalProperties": false,
+      "description": "A typed input the caller supplies, or a typed output it gets back.",
+      "properties": {
+        "name": {
+          "pattern": "^[a-z_][a-z0-9_]*$",
+          "title": "Name",
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/$defs/ParamType"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        },
+        "pattern": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pattern"
+        },
+        "sensitive": {
+          "default": false,
+          "title": "Sensitive",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "type",
+        "description"
+      ],
+      "title": "ParamSpec",
+      "type": "object"
+    },
+    "ParamType": {
+      "enum": [
+        "string",
+        "integer",
+        "decimal",
+        "money",
+        "boolean"
+      ],
+      "title": "ParamType",
+      "type": "string"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "discovery_run_id": {
+          "title": "Discovery Run Id",
+          "type": "string"
+        },
+        "model": {
+          "title": "Model",
+          "type": "string"
+        },
+        "compiled_at": {
+          "format": "date-time",
+          "title": "Compiled At",
+          "type": "string"
+        },
+        "compiler_version": {
+          "title": "Compiler Version",
+          "type": "string"
+        },
+        "recorded_on": {
+          "title": "Recorded On",
+          "type": "string"
+        },
+        "reviewed_by": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reviewed By"
+        }
+      },
+      "required": [
+        "discovery_run_id",
+        "model",
+        "compiled_at",
+        "compiler_version",
+        "recorded_on"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "RecoveryAction": {
+      "enum": [
+        "dismiss_dialog",
+        "wait_and_retry"
+      ],
+      "title": "RecoveryAction",
+      "type": "string"
+    },
+    "RecoveryRule": {
+      "additionalProperties": false,
+      "description": "A recoverable condition: handle it, then continue the flow.",
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "detector": {
+          "$ref": "#/$defs/Checkpoint"
+        },
+        "action": {
+          "$ref": "#/$defs/RecoveryAction"
+        },
+        "max_attempts": {
+          "default": 2,
+          "maximum": 5,
+          "minimum": 1,
+          "title": "Max Attempts",
+          "type": "integer"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "detector",
+        "action",
+        "description"
+      ],
+      "title": "RecoveryRule",
+      "type": "object"
+    },
+    "RiskClass": {
+      "enum": [
+        "safe_reversible",
+        "risky_irreversible"
+      ],
+      "title": "RiskClass",
+      "type": "string"
+    },
+    "Role": {
+      "description": "Accessibility role. `str` Enum so logs and JSON show 'button', not 'Role.BUTTON'.",
+      "enum": [
+        "button",
+        "textbox",
+        "link",
+        "combobox",
+        "checkbox",
+        "text",
+        "dialog",
+        "heading",
+        "unknown"
+      ],
+      "title": "Role",
+      "type": "string"
+    },
+    "Step": {
+      "additionalProperties": false,
+      "properties": {
+        "index": {
+          "title": "Index",
+          "type": "integer"
+        },
+        "action": {
+          "$ref": "#/$defs/ActionType"
+        },
+        "target": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TargetDescriptor"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "value_template": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value Template"
+        },
+        "url_template": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Url Template"
+        },
+        "output_key": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Output Key"
+        },
+        "wait_for": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Checkpoint"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "checkpoint": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Checkpoint"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "risk": {
+          "$ref": "#/$defs/RiskClass",
+          "default": "safe_reversible"
+        },
+        "rationale": {
+          "title": "Rationale",
+          "type": "string"
+        }
+      },
+      "required": [
+        "index",
+        "action",
+        "rationale"
+      ],
+      "title": "Step",
+      "type": "object"
+    },
+    "SurfaceType": {
+      "enum": [
+        "web",
+        "legacy_web",
+        "desktop"
+      ],
+      "title": "SurfaceType",
+      "type": "string"
+    },
+    "TargetApp": {
+      "additionalProperties": false,
+      "properties": {
+        "app_id": {
+          "title": "App Id",
+          "type": "string"
+        },
+        "vendor_product": {
+          "title": "Vendor Product",
+          "type": "string"
+        },
+        "surface_type": {
+          "$ref": "#/$defs/SurfaceType"
+        },
+        "entry_url": {
+          "title": "Entry Url",
+          "type": "string"
+        },
+        "allowlist": {
+          "$ref": "#/$defs/Allowlist"
+        },
+        "required_secrets": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Required Secrets",
+          "type": "array"
+        }
+      },
+      "required": [
+        "app_id",
+        "vendor_product",
+        "surface_type",
+        "entry_url",
+        "allowlist"
+      ],
+      "title": "TargetApp",
+      "type": "object"
+    },
+    "TargetDescriptor": {
+      "additionalProperties": false,
+      "description": "How to find a control, independent of surface technology.\nReplay scores live elements against all of these signals together.",
+      "properties": {
+        "role": {
+          "$ref": "#/$defs/Role"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "label_text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Label Text"
+        },
+        "container_path": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Container Path",
+          "type": "array"
+        },
+        "ordinal_in_container": {
+          "default": 0,
+          "title": "Ordinal In Container",
+          "type": "integer"
+        },
+        "match": {
+          "$ref": "#/$defs/MatchStrategy",
+          "default": "exact_then_fuzzy"
+        },
+        "robustness_note": {
+          "default": "",
+          "title": "Robustness Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "role",
+        "name"
+      ],
+      "title": "TargetDescriptor",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "capability_id": {
+      "title": "Capability Id",
+      "type": "string"
+    },
+    "capability_version": {
+      "minimum": 1,
+      "title": "Capability Version",
+      "type": "integer"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "description": {
+      "title": "Description",
+      "type": "string"
+    },
+    "approval_state": {
+      "$ref": "#/$defs/ApprovalState",
+      "default": "draft"
+    },
+    "target": {
+      "$ref": "#/$defs/TargetApp"
+    },
+    "inputs": {
+      "items": {
+        "$ref": "#/$defs/ParamSpec"
+      },
+      "title": "Inputs",
+      "type": "array"
+    },
+    "outputs": {
+      "items": {
+        "$ref": "#/$defs/ParamSpec"
+      },
+      "title": "Outputs",
+      "type": "array"
+    },
+    "steps": {
+      "items": {
+        "$ref": "#/$defs/Step"
+      },
+      "title": "Steps",
+      "type": "array"
+    },
+    "success_condition": {
+      "$ref": "#/$defs/Checkpoint"
+    },
+    "known_outcomes": {
+      "items": {
+        "$ref": "#/$defs/KnownOutcome"
+      },
+      "title": "Known Outcomes",
+      "type": "array"
+    },
+    "recoveries": {
+      "items": {
+        "$ref": "#/$defs/RecoveryRule"
+      },
+      "title": "Recoveries",
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "capability_id",
+    "capability_version",
+    "name",
+    "description",
+    "target",
+    "inputs",
+    "outputs",
+    "steps",
+    "success_condition",
+    "provenance"
+  ],
+  "title": "Capability",
+  "type": "object"
+}
